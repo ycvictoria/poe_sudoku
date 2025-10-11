@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/24.0.1" fx:controller="com.example.sudoku.SudokuBoardController">
+    <center>
+        <GridPane fx:id="boardContainer" alignment="center" hgap="5" vgap="5">
+            <padding>
+                <Insets bottom="10" left="10" right="10" top="10" />
+            </padding>
+        </GridPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="center" spacing="20" style="-fx-background-color: #ADD8E6;">
+            <padding>
+                <Insets bottom="10" left="10" right="10" top="10" />
+            </padding>
+            <Button fx:id="btnNuevo" onAction="#handleNuevoSudoku" text="Nuevo Sudoku" />
+            <Button fx:id="btnPista" onAction="#handlePista" text="Pista" />
+            <Button fx:id="btnResolver" onAction="#handleResolver" text="Resolver" />
+        </HBox>
+    </bottom>
+   <top>
+      <Pane prefHeight="89.0" prefWidth="257.0" style="-fx-background-color: #ADD8E6;" BorderPane.alignment="CENTER">
+         <children>
+            <Label layoutX="67.0" layoutY="-2.0" prefHeight="40.0" prefWidth="137.0" text="SUDOKU 6*6 " textFill="#1365a8">
+               <font>
+                  <Font name="Comic Sans MS Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="21.0" layoutY="39.0" text="Jugador: " />
+            <Label layoutX="152.0" layoutY="39.0" text="Tiempo Jugado:" />
+            <Label layoutX="179.0" layoutY="56.0" text="00:00:00">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="69.0" layoutY="37.0" text="Player 1">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+   </top>
+</BorderPane>

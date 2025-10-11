@@ -32,7 +32,7 @@ public class SudokuBoardController {
 
     private void generateBoard() {
         boardContainer.getChildren().clear();
-        SudokuGenerator sudokuGenerator = new SudokuGenerator(6);
+        SudokuGenerator sudokuGenerator = new SudokuGenerator(SIZE);
         int[][] sudoku= sudokuGenerator.getBoard();
         hideRandomCells(sudoku,30);
 
