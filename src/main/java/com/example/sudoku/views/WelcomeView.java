@@ -7,15 +7,15 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class GameView extends Stage {
+public class WelcomeView extends Stage {
 
-    public GameView() throws IOException {
+    public WelcomeView() throws IOException {
         //  this.setTitle("Craps Game");
         System.out.println(getClass().getResource("/com/example/typewordsgame/sudoku.fxml"));
 
         FXMLLoader fxmlLoader = new FXMLLoader(
 
-                getClass().getResource("/com/example/typewordsgame/sudoku.fxml")
+                getClass().getResource("/com/example/sudoku/sudoku.fxml")
         );
 
         Parent root = fxmlLoader.load();
