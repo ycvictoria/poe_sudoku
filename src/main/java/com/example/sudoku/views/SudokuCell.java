@@ -65,6 +65,7 @@ public class SudokuCell extends TextField {
         System.out.println("setValue() -> value = " + this.value);
         if (value != 0) {
             setText(String.valueOf(value));
+
         } else {
             setText("");
         }
