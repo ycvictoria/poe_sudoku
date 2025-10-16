@@ -10,8 +10,6 @@ import java.io.IOException;
 public class WelcomeView extends Stage {
 
     public WelcomeView() throws IOException {
-        //  this.setTitle("Craps Game");
-        System.out.println(getClass().getResource("/com/example/typewordsgame/sudoku.fxml"));
 
         FXMLLoader fxmlLoader = new FXMLLoader(
 
