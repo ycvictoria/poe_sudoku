@@ -50,8 +50,8 @@ public class SudokuGameController {
 
     @FXML
     private void handlePista() {
-        System.out.println("Verificando Sudoku...");
-        // Aquí podrías implementar la lógica de validación
+        System.out.println("Mostrando Pista Sudoku...");
+        board.getHint();
     }
 
     @FXML
