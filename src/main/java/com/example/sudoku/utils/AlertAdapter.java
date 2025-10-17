@@ -5,8 +5,8 @@ import javafx.scene.control.ButtonType;
 import java.util.Optional;
 
 /**
- * Clase abstracta adaptadora que implementa GameEventListener.
- * Define métodos vacíos para los eventos del juego
+ * Clase abstracta adaptadora que implementa GameAlertHandler.
+ * Define métodos vacíos para las alertas del juego
  * y proporciona implementaciones por defecto para las alertas.
  */
 public abstract class AlertAdapter implements GameAlertHandler {
@@ -47,7 +47,7 @@ public abstract class AlertAdapter implements GameAlertHandler {
     }
 
     // ==== Método interno auxiliar ====
-    private void showAlert(Alert.AlertType type, String title, String message) {
+    public void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);

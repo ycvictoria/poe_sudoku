@@ -1,5 +1,6 @@
 package com.example.sudoku.views;
 
+import com.example.sudoku.controllers.CellChangeListener;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Font;
 
@@ -9,6 +10,7 @@ public class SudokuCell extends TextField {
     private  final int col;
     private boolean isEditable;
     private  int value;
+    private CellChangeListener listener;
 
     public SudokuCell(int row, int col, boolean isEditable, int value) {
         this.row = row;
@@ -34,18 +36,22 @@ public class SudokuCell extends TextField {
     /**
      * Method listener of the user typing.
      */
+    /**
+     * Listener que detecta cambios de texto y notifica al tablero.
+     */
     private void configureTextListener() {
         textProperty().addListener((obs, oldVal, newVal) -> {
-            //If user clear the cell
             if (newVal.isEmpty()) {
                 this.value = 0;
+                if (listener != null) listener.onValueChanged(row, col, 0);
                 return;
             }
-            //Only allows input -> 1-6 digit
-            if (newVal.matches("[1-6]")) {
+
+            if (newVal.matches("[1-9]")) { // acepta dígitos válidos
                 this.value = Integer.parseInt(newVal);
-                System.out.println("Nuevo valor ingresado: " + this.value);
+                if (listener != null) listener.onValueChanged(row, col, value);
             } else {
+                // Rechazar entrada inválida
                 setText(oldVal);
             }
         });
@@ -74,13 +80,37 @@ public class SudokuCell extends TextField {
     }
 
 
+
     public void showHint(int num) {
         setStyle("-fx-background-color: #FCFF26; -fx-border-color: #808080;");
         setValue(num);
-        setText(String.valueOf(num));
-        System.out.println(value);
+        //setText(String.valueOf(num));
         setEditable(false);
 
 
     }
+    /**
+     * Changes the color of the cell depending on valid or not.
+     */
+    public void setValid(boolean isValid) {
+        if (!isEditable) {
+            // Don´t modify initial hints
+            setStyle("-fx-background-color: #e0e0e0; -fx-border-color: #808080;");
+            return;
+        }
+
+        if (isValid) {
+            // Valid cell or empty yet
+            setStyle("-fx-background-color: white; -fx-border-color: #808080;");
+        } else {
+            // Incorrect cell
+            setStyle("-fx-background-color: #ffb3b3; -fx-border-color: #ff0000;");
+        }
+    }
+
+
+    public void setChangeListener(CellChangeListener listener) {
+        this.listener = listener;
+    }
+
 }
