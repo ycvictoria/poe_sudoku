@@ -23,7 +23,8 @@ public class WelcomeView extends Stage {
      * @throws IOException if an error occurs while loading the FXML file.
      */
     public WelcomeView() throws IOException {
-
+        System.out.println( getClass().getResource("/com/example/sudoku/welcomeView.fxml"));
+        System.out.println( getClass().getResource("/com/example/sudoku/sudokuGame.fxml"));
         FXMLLoader fxmlLoader = new FXMLLoader(
                 getClass().getResource("/com/example/sudoku/welcomeView.fxml")
         );
