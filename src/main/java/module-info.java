@@ -1,7 +1,8 @@
 module com.example.sudoku {
     requires javafx.controls;
     requires javafx.fxml;
-
+    requires javafx.graphics;
+    requires javafx.base;
 
 
     opens com.example.sudoku to javafx.fxml;
