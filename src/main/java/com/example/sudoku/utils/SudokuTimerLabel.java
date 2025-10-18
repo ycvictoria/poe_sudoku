@@ -15,12 +15,12 @@ public class SudokuTimerLabel extends HBox {
     private int secondsElapsed = 0;
 
     public SudokuTimerLabel(String title) {
-        // Label del título
+        // Label  title
         titleLabel = new Label(title + ": ");
         titleLabel.setFont(Font.font("Arial", 14));
-        titleLabel.setStyle("-fx-text-fill: #333333; -fx-font-weight: bold;");
+        titleLabel.setStyle("-fx-text-fill: #2196F3; -fx-font-weight: bold;");
 
-        // Label del tiempo
+        // Label of time
         timeLabel = new Label(formatTime(secondsElapsed));
         timeLabel.setFont(Font.font("Consolas", 20));
         timeLabel.setStyle(

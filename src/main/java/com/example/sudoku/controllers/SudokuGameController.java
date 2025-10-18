@@ -99,6 +99,8 @@ public class SudokuGameController {
     private void handleResolver() {
         System.out.println("Resolviendo Sudoku...");
         board.validateBoardOnDemand();
+
+
     }
 
 
