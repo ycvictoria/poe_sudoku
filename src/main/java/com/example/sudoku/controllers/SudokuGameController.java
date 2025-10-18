@@ -2,9 +2,16 @@ package com.example.sudoku.controllers;
 
 import com.example.sudoku.models.SudokuBoard;
 import com.example.sudoku.utils.AlertsSudoku;
+import com.example.sudoku.utils.SudokuTimerLabel;
+import com.example.sudoku.utils.SudokuTimerLabel;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 
 /**
  * The main controller for the Sudoku game.
@@ -33,6 +40,11 @@ public class SudokuGameController {
     private SudokuBoard board;
     /** Object to display alerts and confirmations. */
     private AlertsSudoku alerts;
+    private SudokuTimerLabel playedTimeLabel;
+    @FXML
+    private Pane gridLabelTime;
+
+
     /**
      * Method called automatically when the FXML interface loads.
      * Initializes the dashboard, configures alerts, and adds the dashboard
@@ -42,6 +54,9 @@ public class SudokuGameController {
     public void initialize() {
         board= new SudokuBoard(SIZE);
         alerts= new AlertsSudoku();
+        playedTimeLabel = new SudokuTimerLabel("Tiempo Jugado");
+        gridLabelTime.getChildren().add(playedTimeLabel);
+        playedTimeLabel.start();
         boardContainer.getChildren().add(board);
         generateBoard();
     }
@@ -63,6 +78,9 @@ public class SudokuGameController {
         //if confirms, generate new sudoku
         if(confirms){
             board.generateNewBoard(SIZE);
+            playedTimeLabel.reset();
+            playedTimeLabel.start();
+
         }
 
     }
@@ -82,4 +100,6 @@ public class SudokuGameController {
         System.out.println("Resolviendo Sudoku...");
         board.validateBoardOnDemand();
     }
+
+
 }
