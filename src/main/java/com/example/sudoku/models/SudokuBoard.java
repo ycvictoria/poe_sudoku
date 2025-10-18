@@ -5,9 +5,17 @@ import com.example.sudoku.utils.AlertsSudoku;
 import com.example.sudoku.views.SudokuCell;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.GridPane;
-
 import java.util.Random;
 
+/**
+ * Represents the main Sudoku board in the interface.
+ * This class combines model logic with the graphical view.
+ * It is responsible for generating, displaying, and validating the board, as well as
+ * detecting user actions when filling in cells.
+ * @author Victoria Yuan
+ * @author Karen Hoyos
+ * @version 1.0
+ */
 public class SudokuBoard extends GridPane implements CellChangeListener {
 
     private int size;
@@ -20,6 +28,10 @@ public class SudokuBoard extends GridPane implements CellChangeListener {
     private int numInitialShowNumbers;
     private int numOccupiedCells;
 
+    /**
+     * Creates a new Sudoku board with the specified size.
+     * @param size board size.
+     */
     public SudokuBoard(int size) {
         this.size = size;
         this.boxSize = (int) Math.sqrt(size);
@@ -28,7 +40,10 @@ public class SudokuBoard extends GridPane implements CellChangeListener {
         numInitialShowNumbers = 5;
         generateBoard(size);
     }
-
+    /**
+     * Generates a new dashboard and displays it on screen.
+     * @param size Size of the dashboard to generate.
+     */
     public void generateBoard(int size) {
         this.getChildren().clear();
 
@@ -43,34 +58,66 @@ public class SudokuBoard extends GridPane implements CellChangeListener {
                 int value = numbersSudoku[row][col];
                 boolean editable = value == 0;
                 SudokuCell cell = new SudokuCell(row, col, editable, value);
+                String baseColor = editable ? "white" : "#e0e0e0";
+                String top = "1", right = "1", bottom = "1", left = "1";
 
-                // Colores iniciales
-                if (!editable) {
-                    cell.setStyle("-fx-background-color: #e0e0e0; -fx-border-color: #808080;");
-                } else {
-                    cell.setStyle("-fx-background-color: white; -fx-border-color: #808080;");
-                }
+                if (row % 2 == 0 && row != 0) top = "2";
+                if (row == size - 1) bottom = "2";
 
+                if (col % 3 == 0 && col != 0) left = "2";
+                if (col == size - 1) right = "2";
+
+                cell.setStyle(String.format(
+                        "-fx-background-color: %s; " +
+                                "-fx-border-color: black; " +
+                                "-fx-border-width: %spx %spx %spx %spx; " +
+                                "-fx-border-style: solid; " +
+                                "-fx-alignment: center;",
+                        baseColor, top, right, bottom, left
+                ));
                 cells[row][col] = cell;
                 cell.setChangeListener(this);
                 this.add(cell, col, row);
             }
         }
     }
-
+    /**
+     * Hides random cells on the board.
+     * @param board base board
+     * @param cellsToHide number of cells to hide
+     */
     public static void hideRandomCells(int[][] board, int cellsToHide) {
         Random rand = new Random();
-        int hidden = 0;
-        while (hidden < cellsToHide) {
-            int row = rand.nextInt(6);
-            int col = rand.nextInt(6);
-            if (board[row][col] != 0) {
-                board[row][col] = 0;
-                hidden++;
+        boolean[][] keepVisible = new boolean[6][6];
+
+        int blockRows = 2;
+        int blockCols = 3;
+
+        for (int startRow = 0; startRow < 6; startRow += blockRows) {
+            for (int startCol = 0; startCol < 6; startCol += blockCols) {
+                int visibles = 0;
+                while (visibles < 2) {
+                    int row = startRow + rand.nextInt(blockRows);
+                    int col = startCol + rand.nextInt(blockCols);
+                    if (!keepVisible[row][col]) {
+                        keepVisible[row][col] = true;
+                        visibles++;
+                    }
+                }
+            }
+        }
+        for (int row = 0; row < 6; row++) {
+            for (int col = 0; col < 6; col++) {
+                if (!keepVisible[row][col]) {
+                    board[row][col] = 0;
+                }
             }
         }
     }
 
+    /**
+     * Provides a random hint to the player.
+     */
     public void getHint() {
         Random rand = new Random();
         boolean found = false;
@@ -90,11 +137,13 @@ public class SudokuBoard extends GridPane implements CellChangeListener {
                     found = true;
                 }
             }
-            // Revalidar tablero después de poner la pista
             updateCellColors();
         }
     }
-
+    /**
+     * Calculates how many cells on the board are occupied.
+     * @return the number of cells with a non-zero value
+     */
     public int numberOccupiedCells() {
         int occupied = 0;
         for (int i = 0; i < cells.length; i++) {
@@ -104,7 +153,11 @@ public class SudokuBoard extends GridPane implements CellChangeListener {
         }
         return occupied;
     }
-
+    /**
+     * Creates an exact copy of a two-dimensional board.
+     * @param board original board.
+     * @return copy of the board.
+     */
     private int[][] copyBoard(int[][] board) {
         int[][] copy = new int[board.length][board[0].length];
         for (int i = 0; i < board.length; i++) {
@@ -113,45 +166,63 @@ public class SudokuBoard extends GridPane implements CellChangeListener {
         return copy;
     }
 
+    /**
+     * @param row the row of the cell that changed.
+     * @param col the column of the cell that changed.
+     * @param newValue the new value assigned to the cell
+     */
     @Override
     public void onValueChanged(int row, int col, int newValue) {
         updateCellColors();
         checkCompletion();
     }
-
+    /**
+     * Updates the colors of all cells based on their validity.
+     */
     private void updateCellColors() {
         for (int r = 0; r < size; r++) {
             for (int c = 0; c < size; c++) {
                 SudokuCell cell = cells[r][c];
 
                 if (!cell.isEditable()) {
-                    // Pistas iniciales o de getHint() no cambian de color
-                    if (cell.getStyle().contains("#FCFF26")) continue; // amarillas
-                    cell.setStyle("-fx-background-color: #e0e0e0; -fx-border-color: #808080;"); // gris
+                    if (cell.getStyle().contains("#FCFF26")) continue;
+                    setCellBackground(cell, "#e0e0e0"); // gris
                     continue;
                 }
 
                 int val = cell.getValue();
+
+                String originalBorders = cell.getStyle()
+                        .replaceAll("-fx-background-color:[^;]+;", "")
+                        .replaceAll("-fx-border-color:[^;]+;", "")
+                        .replaceAll("-fx-border-style:[^;]+;", "")
+                        .replaceAll("-fx-alignment:[^;]+;", "");
+
                 if (val == 0) {
-                    cell.setStyle("-fx-background-color: white; -fx-border-color: #808080;");
+                    setCellBackground(cell, "white");
                 } else if (isValidMove(r, c, val)) {
-                    cell.setStyle("-fx-background-color: #9EFF75; -fx-border-color: #808080;"); // verde
+                    setCellBackground(cell, "#9EFF75"); // verde
                 } else {
-                    cell.setStyle("-fx-background-color: #EB9478; -fx-border-color: #808080;"); // rojo
+                    setCellBackground(cell, "#EB9478"); // rojo
                 }
+
             }
         }
     }
-
+    /**
+     * Checks if a value is valid in a given cell.
+     * @param row The cell's row.
+     * @param col The cell's column.
+     * @param value The value to validate.
+     * @return {@code true} if the transaction is valid.
+     */
     private boolean isValidMove(int row, int col, int value) {
-        // Validar fila y columna
         for (int i = 0; i < size; i++) {
             if ((i != col && cells[row][i].getValue() == value) ||
                     (i != row && cells[i][col].getValue() == value))
                 return false;
         }
 
-        // Validar bloque 2x3 para 6x6
         int startRow = (row / 2) * 2;
         int startCol = (col / 3) * 3;
 
@@ -164,11 +235,18 @@ public class SudokuBoard extends GridPane implements CellChangeListener {
 
         return true;
     }
+    /**
+     * Generates a new, clean board.
+     * @param size Size of the new board.
+     */
     public void generateNewBoard(int size) {
         generateBoard(size);
         numOccupiedCells = 0;
     }
-
+    /**
+     * Checks if the Sudoku has been completed correctly.
+     * If it is completed, displays an alert and blocks editing.
+     */
     private void checkCompletion() {
         for (int r = 0; r < size; r++) {
             for (int c = 0; c < size; c++) {
@@ -178,18 +256,58 @@ public class SudokuBoard extends GridPane implements CellChangeListener {
                 }
             }
         }
-
-        // Si llegamos aquí, el tablero está completo y válido
         AlertsSudoku newAlert = new AlertsSudoku();
         newAlert.showAlert(Alert.AlertType.INFORMATION, "¡Felicidades!", "Has completado el Sudoku correctamente.");
 
-        // Desactivar edición en todas las celdas
         for (int r = 0; r < size; r++) {
             for (int c = 0; c < size; c++) {
                 cells[r][c].setEditable(false);
             }
         }
     }
+    /**
+     * Validates the current Sudoku state when the "Resolver" button is pressed.
+     * Shows an alert depending on the current state of the board.
+     */
+    public void validateBoardOnDemand() {
+        boolean hasEmptyCells = false;
+        boolean hasErrors = false;
+
+        for (int r = 0; r < size; r++) {
+            for (int c = 0; c < size; c++) {
+                int val = cells[r][c].getValue();
+                if (val == 0) {
+                    hasEmptyCells = true;
+                } else if (!isValidMove(r, c, val)) {
+                    hasErrors = true;
+                }
+            }
+        }
+
+        AlertsSudoku alert = new AlertsSudoku();
+
+        if (hasErrors) {
+            alert.showAlert(Alert.AlertType.ERROR, "Sudoku incorrecto", "Hay errores en el tablero. Revisa los números marcados en rojo.");
+        } else if (hasEmptyCells) {
+            alert.showAlert(Alert.AlertType.WARNING, "Sudoku incompleto", "Aún hay casillas vacías.");
+        } else {
+            checkCompletion();
+        }
+        updateCellColors();
+    }
+    /**
+     * Changes the background color of a Sudoku cell without affecting borders or other styles.
+     * @param cell The cell of type whose background color you want to change.
+     * @param color The background color to apply.
+     */
+    private void setCellBackground(SudokuCell cell, String color) {
+        String style = cell.getStyle();
+
+        style = style.replaceAll("-fx-background-color:[^;]+;", "");
+
+        cell.setStyle(style + "-fx-background-color: " + color + ";");
+    }
+
 
 
 }

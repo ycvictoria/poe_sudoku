@@ -1,0 +1,5 @@
+module:com.example.sudoku
+com.example.sudoku
+main.java.com.example.sudoku.controllers
+main.java.com.example.sudoku.models
+main.java.com.example.sudoku.views
